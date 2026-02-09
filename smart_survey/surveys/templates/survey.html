@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    /* --- Create Survey Page Styles --- */
+
+    .page-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding-bottom: 60px;
+    }
+
+    /* 1. Hero Header */
+    .hero-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2d3748;
+        margin-bottom: 10px;
+        letter-spacing: -0.5px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+        color: #718096;
+        line-height: 1.5;
+        max-width: 450px;
+        margin: 0 auto;
+    }
+
+    /* 2. Form Card Container */
+    .form-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Decorative Top Accent */
+    .form-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+
+    /* 3. Magic Styling for Django's {{ form.as_p }} */
+    
+    /* Spacing between fields */
+    form p {
+        margin-bottom: 24px;
+    }
+
+    /* Labels */
+    form p label {
+        display: block; /* Force label to own line */
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 8px;
+    }
+
+    /* Input Fields (Text, Textarea, etc.) */
+    form p input[type="text"],
+    form p input[type="email"],
+    form p input[type="url"],
+    form p textarea,
+    form p select {
+        width: 100%; /* Full width SaaS style */
+        padding: 12px 16px;
+        background-color: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        color: #2d3748;
+        transition: all 0.2s ease-in-out;
+        font-family: inherit;
+    }
+
+    /* Focus State - The "Glow" */
+    form p input:focus,
+    form p textarea:focus,
+    form p select:focus {
+        background-color: #ffffff;
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+    }
+
+    /* Placeholder text styling */
+    ::placeholder {
+        color: #a0aec0;
+        opacity: 1;
+    }
+
+    /* Help Text (if Django sends it) */
+    .helptext {
+        display: block;
+        font-size: 0.85rem;
+        color: #718096;
+        margin-top: 6px;
+    }
+
+    /* 4. Submit Button */
+    button[type="submit"] {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 14px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-top: 10px;
+    }
+
+    button[type="submit"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(118, 75, 162, 0.3);
+    }
+
+    button[type="submit"]:active {
+        transform: translateY(0);
+    }
+
+</style>
+
+<div class="page-container">
+    
+    <div class="hero-header">
+        <div style="margin-bottom: 15px; color: #667eea;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+        </div>
+        <h1 class="hero-title">Create a New Survey</h1>
+        <p class="hero-subtitle">Give your survey a name and an optional description. You can start adding questions immediately after creating it.</p>
+    </div>
+
+    <div class="form-card">
+        <form method="post">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+            
+            <button type="submit">Create Survey</button>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

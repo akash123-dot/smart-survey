@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    /* --- AI Builder Specific Styles --- */
+
+    .ai-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding-bottom: 80px;
+    }
+
+    /* 1. Header Section */
+    .ai-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding: 0 10px;
+    }
+
+    .ai-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #2d3748;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .ai-icon {
+        color: #d53f8c; /* Pink/Purple accent */
+    }
+
+    /* Top Right "Ask AI Again" Button */
+    .btn-ask-again {
+        background-color: #fff;
+        color: #4a5568;
+        border: 1px solid #e2e8f0;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-ask-again:hover {
+        background-color: #f7fafc;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        color: #2d3748;
+    }
+
+    /* 2. Prompt Form Card */
+    .prompt-card {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        border: 1px solid #edf2f7;
+        margin-bottom: 40px;
+    }
+
+    /* Styling the raw Django form inside the prompt card */
+    .prompt-card form p {
+        margin-bottom: 20px;
+    }
+    
+    .prompt-card form label {
+        font-weight: 600;
+        color: #4a5568;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .prompt-card form input[type="text"],
+    .prompt-card form textarea {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+    }
+    
+    .prompt-card form input:focus, 
+    .prompt-card form textarea:focus {
+        outline: none;
+        border-color: #d53f8c;
+        box-shadow: 0 0 0 3px rgba(213, 63, 140, 0.1);
+    }
+
+    .btn-generate {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: transform 0.2s;
+        margin-top: 10px;
+    }
+    
+    .btn-generate:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(118, 75, 162, 0.4);
+    }
+
+    /* 3. "Save All" Section */
+    .bulk-action-bar {
+        background: #f0fff4;
+        border: 1px solid #c6f6d5;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .btn-save-all {
+        background-color: #38a169;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .btn-save-all:hover {
+        background-color: #2f855a;
+    }
+
+    /* 4. Generated Question Cards */
+    .ai-question-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 25px;
+        transition: all 0.2s;
+        position: relative;
+    }
+
+    .ai-question-card:hover {
+        border-color: #cbd5e0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .question-text {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 15px;
+    }
+
+    .options-list li {
+        margin-bottom: 8px;
+        padding: 8px 12px;
+        background: #f7fafc;
+        border-radius: 6px;
+        border: 1px solid #edf2f7;
+        color: #718096;
+    }
+
+    /* Preview Inputs (Disabled) */
+    input[type="radio"]:disabled,
+    input[type="checkbox"]:disabled,
+    input[type="text"]:disabled {
+        cursor: not-allowed;
+        background-color: #edf2f7;
+    }
+    
+    /* Text Input Preview */
+    input[type="text"]:disabled {
+        width: 100%;
+        border: 1px dashed #cbd5e0;
+        padding: 10px;
+        border-radius: 6px;
+        color: #a0aec0;
+    }
+
+    /* Save Individual Button */
+    .btn-save-single {
+        background-color: white;
+        color: #4a5568;
+        border: 1px solid #cbd5e0;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-top: 15px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-save-single:hover {
+        background-color: #2d3748;
+        color: white;
+        border-color: #2d3748;
+    }
+
+    /* Footer */
+    .footer-link {
+        display: block;
+        text-align: center;
+        margin-top: 40px;
+        color: #718096;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    .footer-link:hover {
+        color: #2d3748;
+        text-decoration: underline;
+    }
+
+</style>
+
+<div class="ai-container">
+
+    <div class="ai-header">
+        <div class="ai-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="ai-icon" viewBox="0 0 16 16">
+                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+            </svg>
+            AI Assistant
+        </div>
+        
+        <a href="{% url 'AI-survey' survey_id=survey_id %}" class="btn-ask-again">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+            </svg>
+            Ask AI Again
+        </a>
+    </div>
+
+    {% if not data %}
+        <div class="prompt-card">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn-generate">✨ Generate Questions</button>
+            </form>
+        </div>
+    {% endif %}
+
+
+    {% if data %}
+        
+        <div class="bulk-action-bar">
+            <div>
+                <h4 style="margin:0; font-weight:700; color: #276749;">AI Suggestions Ready</h4>
+                <small style="color: #2f855a;">Review the questions below and save the ones you like.</small>
+            </div>
+            <form method="post" action="{% url 'SaveAllAiQuestions' survey_id %}">
+                {% csrf_token %}
+                <textarea name="data" hidden>{{ json_data|safe }}</textarea>
+                <button type="submit" class="btn-save-all">Save All & Finish</button>
+            </form>
+        </div>
+
+        <hr style="margin: 30px 0; border-top: 1px solid #e2e8f0; opacity: 0.5;">
+
+        {% for item in data %}
+            <form method="post" action="{% url 'save-question' survey_id %}">
+                {% csrf_token %}
+
+                <div class="ai-question-card">
+                    
+                    <p class="question-text">{{ item.text }}</p>
+                    <input type="hidden" name="text" value="{{ item.text }}">
+                    <input type="hidden" name="question_type" value="{{ item.question_type }}">
+
+                    {% if item.options %}
+                        <ul class="options-list" style="list-style: none; padding-left: 0;">
+                        {% if item.question_type == 'single_choice' %}
+                            {% for option in item.options %}
+                                <li>
+                                    <label style="margin:0; cursor: default;">
+                                        <input type="radio" disabled style="margin-right: 8px;">
+                                        {{ option }}
+                                    </label>
+                                </li>
+                            {% endfor %}
+                            <input type="hidden" name="options" value="{{ item.options|join:',' }}">
+                        
+                        {% elif item.question_type == 'multiple_choice' %}
+                            {% for option in item.options %}
+                                <li>
+                                    <label style="margin:0; cursor: default;">
+                                        <input type="checkbox" disabled style="margin-right: 8px;">
+                                        {{ option }}
+                                    </label>
+                                </li>
+                            {% endfor %}
+                            <input type="hidden" name="options" value="{{ item.options|join:',' }}">
+                        {% endif %}
+                        </ul>
+
+                    {% else %}
+                        <input type="text" disabled placeholder="Participants will answer here...">
+                    {% endif %}
+
+                    <button type="submit" name="save_single" class="btn-save-single">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                        </svg>
+                        Save This Question
+                    </button>
+
+                </div>
+            </form>
+        {% endfor %}
+    {% endif %}
+
+    <a href="{% url 'question' survey_id=survey_id %}" class="footer-link">
+        &larr; Back to manual question builder
+    </a>
+
+</div>
+
+{% endblock %}

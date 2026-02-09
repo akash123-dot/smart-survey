@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to the Survey</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts (Inter for a modern SaaS look) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* --- Main Card Container --- */
+        .welcome-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Top colored accent bar */
+        .welcome-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* --- Header Typography --- */
+        .header-section {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: #718096;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        /* --- Form Styling (Targeting Django's {{ form.as_p }}) --- */
+        
+        form p {
+            margin-bottom: 20px;
+        }
+
+        /* Labels */
+        form p label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        /* Inputs */
+        form p input[type="text"],
+        form p input[type="email"],
+        form p input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #2d3748;
+            transition: all 0.2s;
+            background-color: #f8fafc;
+        }
+
+        /* Input Focus State */
+        form p input:focus {
+            border-color: #667eea;
+            background-color: #fff;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+        }
+
+        /* --- Submit Button --- */
+        button[type="submit"] {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(118, 75, 162, 0.25);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+        /* Optional: Decorative Icon in Header */
+        .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            background-color: #f0f4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            color: #667eea;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="welcome-card">
+        
+        <!-- Header Section -->
+        <div class="header-section">
+            <!-- Simple SVG User Icon -->
+            <div class="icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                </svg>
+            </div>
+            <h1 class="page-title">Welcome</h1>
+            <p class="page-subtitle">Please enter your details below to begin the survey.</p>
+        </div>
+
+        <!-- The Django Form -->
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Start Survey</button>
+        </form>
+
+    </div>
+
+</body>
+</html>

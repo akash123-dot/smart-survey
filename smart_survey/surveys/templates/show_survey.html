@@ -1,0 +1,378 @@
+ {% extends 'base.html' %}
+
+
+
+
+<!-- 
+
+
+    <h1>{{ survey.title }}</h1>
+    <p>{{ survey.description }}</p>
+
+    {% if questions %}
+        {% for question in questions %}
+            <div style="margin-bottom: 20px;">
+                <h3>{{ question.text }}</h3>
+
+                
+                {% if question.question_type == 'text' %}
+                    <input type="text" name="answer_{{ question.id }}" placeholder="Enter your answer">
+                {% endif %}
+
+                
+                {% if question.question_type == 'int' or question.question_type == 'float' %}
+                    {% for option in question.options %}
+                        <label>
+                            <input type="radio" name="answer_{{ question.id }}" value="{{ option }}">
+                            {{ option }}
+                        </label><br>
+                    {% endfor %}
+                {% endif %}
+
+              
+                {% if question.question_type == 'single_choice' %}
+                    {% for option in question.options %}
+                        <label>
+                            <input type="radio" name="answer_{{ question.id }}" value="{{ option }}">
+                            {{ option }}
+                        </label><br>
+                    {% endfor %}
+                {% endif %}
+
+             
+                {% if question.question_type == 'multiple_choice' %}
+                    {% for option in question.options %}
+                        <label>
+                            <input type="checkbox" name="answer_{{ question.id }}" value="{{ option }}">
+                            {{ option }}
+                        </label><br>
+                    {% endfor %}
+                {% endif %}
+
+          
+                {% if question.question_type == 'bool' %}
+                    <label>
+                        <input type="radio" name="answer_{{ question.id }}" value="True">
+                        True
+                    </label>
+                    <label>
+                        <input type="radio" name="answer_{{ question.id }}" value="False">
+                        False
+                    </label>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No questions available for this survey.</p>
+    {% endif %}
+
+    <hr>
+    <a href="{% url 'question' survey_id=survey_id %}"> Add more question </a>
+    <a href="{% url 'home' %}">🏠 Go Home</a> |
+    <a href="{% url 'show-all-surveys' %}">📋 Show All Surveys</a>
+
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% block content %}
+
+<style>
+    /* --- Survey View Specific Styles --- */
+    
+    .survey-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding-bottom: 60px;
+    }
+
+    /* 1. Hero Header */
+    .survey-header {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 40px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border-top: 8px solid #764ba2; /* Brand accent */
+        position: relative;
+    }
+
+    .survey-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2d3748;
+        margin-bottom: 10px;
+    }
+
+    .survey-desc {
+        font-size: 1.1rem;
+        color: #718096;
+        line-height: 1.6;
+    }
+
+    /* 2. Question Cards */
+    .question-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 25px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        transition: transform 0.2s ease;
+    }
+
+    .question-card:hover {
+        border-color: #cbd5e0;
+        box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+    }
+
+    .question-text {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 20px;
+    }
+
+    /* 3. Input Styling */
+
+    /* Text Input */
+    .custom-text-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+    .custom-text-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    /* Option Labels (Radio & Checkbox) */
+    .option-label {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        background-color: #f8fafc;
+    }
+
+    .option-label:hover {
+        background-color: #edf2f7;
+        border-color: #cbd5e0;
+    }
+
+    /* Hide default radio/check but keep accessibility, 
+       or style the input inside directly */
+    .option-input {
+        margin-right: 12px;
+        transform: scale(1.2);
+        accent-color: #764ba2; /* Modern browser support for color */
+    }
+
+    /* Boolean Toggle wrapper */
+    .bool-wrapper {
+        display: flex;
+        gap: 15px;
+    }
+    .bool-option {
+        flex: 1;
+        text-align: center;
+        justify-content: center;
+    }
+
+    /* 4. Footer Actions */
+    .survey-actions {
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px dashed #cbd5e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .btn-action-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 10px 25px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+        transition: transform 0.2s;
+    }
+    .btn-action-primary:hover {
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    .action-links a {
+        color: #718096;
+        text-decoration: none;
+        font-weight: 500;
+        margin-left: 15px;
+        transition: color 0.2s;
+    }
+    .action-links a:hover {
+        color: #4a5568;
+        text-decoration: underline;
+    }
+
+    /* Empty State */
+    .empty-msg {
+        text-align: center;
+        padding: 40px;
+        color: #a0aec0;
+        font-style: italic;
+    }
+
+</style>
+
+<div class="survey-container">
+
+    <!-- Hero Header -->
+    <div class="survey-header">
+        <h1 class="survey-title">{{ survey.title }}</h1>
+        <p class="survey-desc">{{ survey.description }}</p>
+        <!-- Decorative accent shape -->
+        <div style="position: absolute; top: 20px; right: 20px; opacity: 0.05;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2z"/>
+            </svg>
+        </div>
+    </div>
+
+    {% if questions %}
+        {% for question in questions %}
+            <div class="question-card">
+                <h3 class="question-text">{{ question.text }}</h3>
+
+                <!-- Text question -->
+                {% if question.question_type == 'text' %}
+                    <input type="text" name="answer_{{ question.id }}" placeholder="Enter your answer here..." class="custom-text-input">
+                {% endif %}
+
+                <!-- Integer or Float question -->
+                {% if question.question_type == 'int' or question.question_type == 'float' %}
+                    <div class="options-group">
+                        {% for option in question.options %}
+                            <label class="option-label">
+                                <input type="radio" name="answer_{{ question.id }}" value="{{ option }}" class="option-input">
+                                <span>{{ option }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Single choice question -->
+                {% if question.question_type == 'single_choice' %}
+                    <div class="options-group">
+                        {% for option in question.options %}
+                            <label class="option-label">
+                                <input type="radio" name="answer_{{ question.id }}" value="{{ option }}" class="option-input">
+                                <span>{{ option }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Multiple choice question -->
+                {% if question.question_type == 'multiple_choice' %}
+                    <div class="options-group">
+                        {% for option in question.options %}
+                            <label class="option-label">
+                                <input type="checkbox" name="answer_{{ question.id }}" value="{{ option }}" class="option-input">
+                                <span>{{ option }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Boolean question -->
+                {% if question.question_type == 'bool' %}
+                    <div class="bool-wrapper">
+                        <label class="option-label bool-option">
+                            <input type="radio" name="answer_{{ question.id }}" value="True" class="option-input">
+                            <strong>True</strong>
+                        </label>
+                        <label class="option-label bool-option">
+                            <input type="radio" name="answer_{{ question.id }}" value="False" class="option-input">
+                            <strong>False</strong>
+                        </label>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="question-card empty-msg">
+            <p>No questions available for this survey yet.</p>
+        </div>
+    {% endif %}
+
+    <!-- Footer Actions -->
+    <div class="survey-actions">
+        <!-- Primary Action -->
+        <a href="{% url 'question' survey_id=survey_id %}" class="btn-action-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+            Add More Questions
+        </a>
+
+        <!-- Secondary Links -->
+        <div class="action-links">
+            <a href="{% url 'home' %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                    <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"/>
+                </svg>
+                Home
+            </a>
+            <a href="{% url 'show-all-surveys' %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                    <path d="M11.5 2a1.5 1.5 0 0 0-1.5-1.5h-8A1.5 1.5 0 0 0 .5 2v12A1.5 1.5 0 0 0 2 15.5h8a1.5 1.5 0 0 0 1.5-1.5V2ZM1 2a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v12a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5V2Z"/>
+                </svg>
+                All Surveys
+            </a>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

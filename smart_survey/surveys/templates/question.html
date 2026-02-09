@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    /* --- Scoped Styles for Question Creator --- */
+    
+    .creator-container {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Card Styling */
+    .question-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        padding: 40px;
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Decorative Top Border */
+    .question-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .page-title {
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 25px;
+    }
+
+    /* --- Instruction Box Styling --- */
+    .instruction-box {
+        background-color: #ebf8ff;
+        border-left: 5px solid #4299e1;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .instruction-icon {
+        color: #3182ce;
+        margin-right: 15px;
+        font-size: 24px;
+        flex-shrink: 0;
+    }
+
+    .instruction-content h5 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #2c5282;
+        margin-bottom: 5px;
+    }
+
+    .instruction-content p {
+        font-size: 0.9rem;
+        color: #2a4365;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .code-snippet {
+        background: rgba(255,255,255,0.5);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-weight: 600;
+        color: #d53f8c;
+    }
+
+    /* --- Django Form Modernization --- */
+    /* Targeting the output of {{ form.as_p }} */
+    
+    form p {
+        margin-bottom: 20px;
+    }
+
+    /* Labels */
+    form p label {
+        display: block;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    /* Inputs */
+    form p input[type="text"],
+    form p textarea,
+    form p select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background-color: #f7fafc;
+        color: #2d3748;
+    }
+
+    form p input:focus,
+    form p textarea:focus,
+    form p select:focus {
+        border-color: #667eea;
+        background-color: #fff;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    /* Submit Button styling */
+    .btn-submit {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 14px;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        font-size: 1rem;
+        margin-top: 10px;
+        transition: transform 0.2s;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(118, 75, 162, 0.3);
+        color: white;
+    }
+
+    /* --- Bottom Navigation Area --- */
+    .nav-actions {
+        margin-top: 30px;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+    }
+
+    .btn-nav {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+    }
+
+    /* "Show Survey" Button - Neutral */
+    .btn-nav-secondary {
+        background-color: white;
+        border-color: #e2e8f0;
+        color: #718096;
+    }
+    .btn-nav-secondary:hover {
+        border-color: #cbd5e0;
+        background-color: #f7fafc;
+        color: #4a5568;
+    }
+
+    /* "AI Survey" Button - Special */
+    .btn-nav-ai {
+        background-color: #fff;
+        border-color: #d53f8c; /* Pink/Purple border */
+        color: #d53f8c;
+    }
+    .btn-nav-ai:hover {
+        background-color: #fff5f7;
+        box-shadow: 0 4px 12px rgba(213, 63, 140, 0.15);
+    }
+
+</style>
+
+<div class="creator-container">
+    
+    <div class="question-card">
+        <h2 class="page-title">Add a New Question</h2>
+
+        <div class="instruction-box">
+            <div class="instruction-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                </svg>
+            </div>
+            <div class="instruction-content">
+                <h5>Question Formatting Tips</h5>
+                <p>
+                    For <strong>Multiple Choice</strong>, enter options separated by commas (e.g., <span class="code-snippet">Red, Blue, Green</span>). 
+                    <br>
+                    Leave the options field <strong>blank</strong> if you want an open text response.
+                </p>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-submit">Add Question</button>
+        </form>
+    </div>
+
+    <div class="nav-actions">
+        <a href="{% url 'show-survey' survey_id=survey_id %}" class="btn-nav btn-nav-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+            </svg>
+            Back to Survey
+        </a>
+
+        <a href="{% url 'AI-survey' survey_id=survey_id %}" class="btn-nav btn-nav-ai">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                <path d="M6 12.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5ZM3 8.062C3 6.76 4.235 5.765 5.53 5.886a26.58 26.58 0 0 0 4.94 0C11.765 5.765 13 6.76 13 8.062v1.157a.933.933 0 0 1-.765.935c-.845.147-2.34.346-4.235.346-1.895 0-3.39-.2-4.235-.346A.933.933 0 0 1 3 9.219V8.062Zm4.542-.827a.25.25 0 0 0-.217.068l-.92.9a24.767 24.767 0 0 1-1.871-.183.25.25 0 0 0-.068.495c.55.076 1.232.149 2.02.193a.25.25 0 0 0 .189-.071l.754-.736.847 1.71a.25.25 0 0 0 .404.062l.932-.97a25.286 25.286 0 0 0 1.922-.188.25.25 0 0 0-.068-.495c-.538.074-1.207.145-1.98.189a.25.25 0 0 0-.166.076l-.754.785-.842-1.7a.25.25 0 0 0-.182-.135Z"/>
+                <path d="M8.5 1.866a1 1 0 1 0-1 0V3h-2a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1v1h2v-1h1a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-2v-1.134Z"/>
+            </svg>
+            AI Survey Builder
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

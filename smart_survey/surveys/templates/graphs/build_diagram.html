@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    /* --- Analytics Dashboard Styles --- */
+
+    .analytics-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding-bottom: 60px;
+    }
+
+    /* 1. Hero Analytics Header */
+    .analytics-header {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 30px 40px;
+        margin-bottom: 40px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        border: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .header-text h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #2d3748;
+        margin-bottom: 5px;
+    }
+
+    .header-text p {
+        font-size: 1rem;
+        color: #718096;
+        margin: 0;
+    }
+
+    /* 2. Metric Card (Total Responses) */
+    .metric-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 30px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 10px 20px rgba(118, 75, 162, 0.25);
+        min-width: 180px;
+    }
+
+    .metric-value {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1;
+        display: block;
+    }
+
+    .metric-label {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.9;
+        margin-top: 5px;
+        display: block;
+    }
+
+    /* 3. Chart Cards */
+    .chart-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        margin-bottom: 40px; /* Spacing between charts */
+        border: 1px solid #e2e8f0;
+        overflow: hidden; /* Ensures content stays inside rounded corners */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .chart-card:hover {
+        box-shadow: 0 15px 30px rgba(0,0,0,0.06);
+        border-color: #cbd5e0;
+    }
+
+    /* Header area for the Question Title */
+    .chart-header {
+        padding: 25px 30px;
+        border-bottom: 1px solid #edf2f7;
+        background-color: #fcfcfc;
+    }
+
+    .chart-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .chart-subtitle {
+        font-size: 0.9rem;
+        color: #a0aec0;
+        margin-top: 5px;
+    }
+
+    /* 4. Responsive Graph Container */
+    .chart-body {
+        padding: 20px;
+        background-color: #fff;
+        width: 100%;
+        /* Critical for responsiveness: */
+        overflow-x: auto; 
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Ensure the injected graph SVG/Canvas scales */
+    .chart-body > div {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    /* 5. Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: #f8fafc;
+        border-radius: 16px;
+        border: 2px dashed #e2e8f0;
+    }
+    
+    .empty-icon {
+        color: #cbd5e0;
+        font-size: 3rem;
+        margin-bottom: 20px;
+    }
+
+</style>
+
+<div class="analytics-container">
+
+    <div class="analytics-header">
+        <div class="header-text">
+            <h1>Survey Results</h1>
+            <p>Visual breakdown of responses and data analysis.</p>
+        </div>
+        
+        <div class="metric-card">
+            <span class="metric-value">{{ total_surveys }}</span>
+            <span class="metric-label">Total Responses</span>
+        </div>
+    </div>
+
+    {% if graphs %}
+        {% for graph in graphs %}
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Response Distribution</h3>
+                    <div class="chart-subtitle">Visualization of answer frequency</div>
+                </div>
+
+                <div class="chart-body">
+                    {{ graph|safe }}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3V9a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5h1V2z"/>
+                </svg>
+            </div>
+            <h3>No Data Available</h3>
+            <p class="text-muted">We haven't collected enough responses to generate graphs yet.</p>
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

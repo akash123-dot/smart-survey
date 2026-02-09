@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>submit survey</title>
+</head>
+<body>
+    <h1>{{survey.title}}</h1>
+    <p>{{ survey.description }}</p>
+
+    <form method="POST" action="">
+        {% csrf_token %}
+        
+        {% if questions %}
+            {% for question in questions %}
+                <div style="margin-bottom: 20px;">
+                    <h3>{{ question.text }}</h3>
+
+                    <!-- Text question -->
+                    {% if question.question_type == 'text' %}
+                        <input type="text" name="answer_{{ question.id }}" placeholder="Enter your answer">
+                    {% endif %}
+
+                    <!-- Integer or Float question -->
+                    {% if question.question_type == 'int' or question.question_type == 'float' %}
+                        {% for option in question.options %}
+                            <label>
+                                <input type="radio" name="answer_{{ question.id }}" value="{{ option }}">
+                                {{ option }}
+                            </label><br>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Single choice question -->
+                    {% if question.question_type == 'single_choice' %}
+                        {% for option in question.options %}
+                            <label>
+                                <input type="radio" name="answer_{{ question.id }}" value="{{ option }}">
+                                {{ option }}
+                            </label><br>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Multiple choice question -->
+                    {% if question.question_type == 'multiple_choice' %}
+                        {% for option in question.options %}
+                            <label>
+                                <input type="checkbox" name="answer_{{ question.id }}" value="{{ option }}">
+                                {{ option }}
+                            </label><br>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Boolean question -->
+                    {% if question.question_type == 'bool' %}
+                        <label>
+                            <input type="radio" name="answer_{{ question.id }}" value="True">
+                            True
+                        </label>
+                        <label>
+                            <input type="radio" name="answer_{{ question.id }}" value="False">
+                            False
+                        </label>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit">Submit</button>
+        {% else %}
+            <p>No questions available for this survey.</p>
+        {% endif %}
+    </form>
+
+    
+</body>
+</html>

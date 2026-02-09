@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    /* --- Dashboard Styling --- */
+
+    .dashboard-header {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        margin-bottom: 30px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+
+    .dashboard-title {
+        font-weight: 800;
+        color: #2d3748;
+        font-size: 2rem;
+    }
+
+    .survey-card {
+        border: none;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        transition: all 0.3s ease;
+        height: 100%;
+        border-top: 4px solid #cbd5e0;
+    }
+
+    .survey-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+        border-top-color: #667eea;
+    }
+
+    .survey-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Copy Link Input Styling */
+    .copy-link-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #a0aec0;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    .input-group-text {
+        background-color: white;
+        border-left: 0;
+    }
+    
+    /* Make the input look like part of the dashboard */
+    .form-control-sm {
+        background-color: #f7fafc;
+        border-color: #e2e8f0;
+        color: #4a5568;
+        font-size: 0.85rem;
+    }
+    .form-control-sm:focus {
+        box-shadow: none;
+        border-color: #667eea;
+        background-color: #fff;
+    }
+
+    /* Action Buttons Area */
+    .card-actions {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #edf2f7;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .btn-full-width {
+        grid-column: span 2;
+    }
+    
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: #f8fafc;
+        border-radius: 16px;
+        border: 2px dashed #e2e8f0;
+    }
+</style>
+
+<div class="container">
+
+    {% if messages %}
+        <div class="row mb-4">
+            <div class="col-12">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="dashboard-header d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="dashboard-title">My Surveys</h1>
+            <p class="text-muted mb-0">Manage your active surveys and collect responses.</p>
+        </div>
+        <div class="d-none d-md-block">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#e2e8f0" viewBox="0 0 16 16">
+                <path d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2z"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for survey in surveys %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card survey-card">
+                    <div class="card-body">
+                        
+                        <h5 class="survey-name" title="{{ survey.name }}">{{ survey.name }}</h5>
+
+                        <div class="mb-3">
+                            <label class="copy-link-label">Share Link</label>
+                            <div class="input-group input-group-sm">
+                                <input type="text" class="form-control" value="{{ survey.link }}" id="link-{{ survey.survey_id }}" readonly>
+                                
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('link-{{ survey.survey_id }}', this)" title="Copy to clipboard">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card-actions">
+                            <a href="{% url 'show-survey' survey_id=survey.survey_id %}" class="btn btn-outline-primary btn-sm">
+                                View
+                            </a>
+                            <a href="{% url 'show-chart' survey_id=survey.survey_id %}" class="btn btn-outline-success btn-sm">
+                                Results
+                            </a>
+                            <div class="btn-full-width mt-2">
+                                <a href="{% url 'delete-survey' survey_id=survey.survey_id %}" class="btn btn-light text-danger btn-sm w-100" onclick="return confirm('Delete this survey?');">
+                                    Delete Survey
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="empty-state">
+                    <h3>No Surveys Yet</h3>
+                    <p class="text-muted">Create a survey to start collecting data.</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function copyToClipboard(elementId, btnElement) {
+        /* Get the text field */
+        var copyText = document.getElementById(elementId);
+
+        /* Select the text field */
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+        /* Copy the text inside the text field */
+        navigator.clipboard.writeText(copyText.value).then(() => {
+            /* Visual feedback: Change button icon/color temporarily */
+            let originalHtml = btnElement.innerHTML;
+            btnElement.innerHTML = 'Copied!';
+            btnElement.classList.remove('btn-outline-secondary');
+            btnElement.classList.add('btn-success');
+            
+            setTimeout(() => {
+                btnElement.innerHTML = originalHtml;
+                btnElement.classList.remove('btn-success');
+                btnElement.classList.add('btn-outline-secondary');
+            }, 2000);
+        });
+    }
+</script>
+
+{% endblock %}
