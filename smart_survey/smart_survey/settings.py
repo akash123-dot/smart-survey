@@ -179,18 +179,38 @@ HANDLER404 = 'surveys.views.custom_404'
 
 
 
-REDIS_URL = os.getenv(
-    "REDIS_URL",
-    "redis://my-local-redis:6379/0"  # docker service name
-)
+# REDIS_URL = os.getenv(
+#     "REDIS_URL",
+#     "redis://my-local-redis:6379/0"  
+# )
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/0",
+#     }
+# }
+
+
+REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
+
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/0",
+        "LOCATION": REDIS_URL,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+           
+            "CONNECTION_POOL_KWARGS": {
+                "ssl_cert_reqs": None
+            }
+        }
     }
 }
 
+# Keep this for your rate limiting
+RATELIMIT_USE_CACHE = "default"
 
 
 
