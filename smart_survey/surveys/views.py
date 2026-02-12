@@ -35,7 +35,7 @@ def SurveyView(request):
             # save survey in sql database with name and survey_id
             save_link, created = SurveyLink.objects.update_or_create(user=request.user, name=data['title'], survey_id=survey.id)
             if created:
-                save_link.link = f"http://localhost:8000/start-survey/{save_link.unique_id}"
+                save_link.link = request.build_absolute_uri(f"/start-survey/{save_link.unique_id}")
                 save_link.save()
 
             return redirect(Question_View, survey_id=survey.id)

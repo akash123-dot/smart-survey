@@ -196,7 +196,7 @@ HANDLER404 = 'surveys.views.custom_404'
 # }
 
 
-REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
+REDIS_URL = os.getenv("REDIS_URL")
 
 
 CACHES = {
@@ -213,12 +213,11 @@ CACHES = {
     }
 }
 
-# Keep this for your rate limiting
-RATELIMIT_USE_CACHE = "default"
-
-
 
 RATELIMIT_USE_CACHE = "default"
+
+
+
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
