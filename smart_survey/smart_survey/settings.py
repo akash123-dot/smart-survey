@@ -154,8 +154,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 from mongoengine import connect
 
-# MONGODB_URI = os.getenv("MONGODB_URI")
-# MONGO_DB_NAME = os.getenv("MONGO_DB_NAME")
+MONGODB_URI = os.getenv("MONGODB_URI")
+
+if MONGODB_URI:
+    connect(host=MONGODB_URI)
+else:
+    raise Exception("MONGODB_URI is not set")
 
 
 # connect(
