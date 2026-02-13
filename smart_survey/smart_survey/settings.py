@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-nyufu77c9q0a04t)fts!q&ad6yoqm*#d0!yc5s#3%ql!3&9*$z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['smart-survey-6raf.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['smart-survey-6raf.onrender.com', 'localhost', '127.0.0.1', 'web-production-c59ae.up.railway.app']
 
 
 # Application definition
